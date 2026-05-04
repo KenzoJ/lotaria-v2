@@ -6,7 +6,7 @@ const textInput = ref('')
 const result = ref('')
 
 function onSubmit() {
-  result.value = countWords(textInput.value)
+//  result.value = countWords("test")
 }
 </script>
 

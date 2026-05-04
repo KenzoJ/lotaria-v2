@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
-
 import { mount } from '@vue/test-utils'
 import App from '../App.vue'
-import { countWords, shortExampleText, exampleText } from '../count'
+import { countWords, sortWords } from '../count'
+import { exampleText, shortExampleText, exampleSort } from "./mocks.ts"
 
 describe('App', () => {
   it('mounts renders properly', () => {
@@ -16,6 +16,11 @@ describe('Count', () => {
     const result = countWords(shortExampleText);
     console.log(result)
     expect(Object.keys(result).length).toBe(25)
+  });
+  it('sorts words', () => {
+    const result = sortWords(exampleSort);
+    console.log(result)
+    expect(Object.keys(result).length).toBe(3)
   });
   //it('totals number of words for long text', () => {
     //const result = countWords(exampleText);
