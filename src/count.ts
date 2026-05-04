@@ -1,3 +1,4 @@
-export function countWords(): string{
-  return "the (100)"
+export function countWords(words: string): string{
+  console.log(words)
+  return words.length
 }
