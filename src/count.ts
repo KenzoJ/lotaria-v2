@@ -1,5 +1,20 @@
 type StringMap = Record<string, number>
-type SortedWords = Record<number, string[]>
+export type SortedWords = Record<number, string[]>
+
+/** Largest frequency present in buckets (0 if empty). */
+export function maxFrequency(sorted: SortedWords): number {
+  const keys = Object.keys(sorted)
+  if (keys.length === 0) return 0
+  return Math.max(...keys.map(Number))
+}
+
+/** Frequencies that have at least one word, highest first — use this iteration order in the UI. */
+export function frequenciesDescending(sorted: SortedWords): number[] {
+  return Object.keys(sorted)
+    .map(Number)
+    .filter((n) => (sorted[n]?.length ?? 0) > 0)
+    .sort((a, b) => b - a)
+}
 
 export function countWords(words: string): StringMap {
   //
