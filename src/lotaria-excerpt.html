@@ -1,4 +1,111 @@
-I asked Lotaria if she has already read some books of mine that I lent her. She said no, because here she doesn't have a computer at her disposal.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lotaria Excerpt</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0b1020;
+        --card: rgba(255, 255, 255, 0.06);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.7);
+        --border: rgba(255, 255, 255, 0.12);
+        --shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f6f7fb;
+          --card: rgba(0, 0, 0, 0.04);
+          --text: rgba(0, 0, 0, 0.88);
+          --muted: rgba(0, 0, 0, 0.62);
+          --border: rgba(0, 0, 0, 0.12);
+          --shadow: 0 12px 50px rgba(0, 0, 0, 0.12);
+        }
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(
+            900px 500px at 20% 10%,
+            rgba(110, 140, 255, 0.25),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 500px at 85% 25%,
+            rgba(255, 155, 110, 0.18),
+            transparent 55%
+          ),
+          var(--bg);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 900px;
+        margin: 48px auto;
+        padding: 0 18px;
+      }
+
+      header {
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin: 0 0 6px 0;
+        letter-spacing: 0.2px;
+      }
+
+      p.sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .card {
+        border: 1px solid var(--border);
+        background: var(--card);
+        box-shadow: var(--shadow);
+        border-radius: 14px;
+        padding: 18px 18px;
+        overflow: hidden;
+      }
+
+      .excerpt {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+      }
+
+      footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Lotaria excerpt</h1>
+        <p class="sub">Source: <code>src/lotaria-excerpt.txt</code></p>
+      </header>
+
+      <section class="card" aria-label="Excerpt">
+        <pre class="excerpt">I asked Lotaria if she has already read some books of mine that I lent her. She said no, because here she doesn't have a computer at her disposal.
 
 She explained to me that a suitably programmed computer can read a novel in a few minutes and record the list of all the words contained in the text, in order of frequency. "That way I can have an already completed read. ing at hand," Lotaria says, "with an incalculable saving of time. What is the reading of a text, in fact, except the recording of certain thematic recurrences, certain insistences of forms and meanings? An electronic reading supplies me with a list of the frequencies, which I have only to glance at to form an idea of the problems the book suggests to my critical study. Naturally, at the highest frequencies the list records countless articles, pronouns, particles, but I don't pay them any attention. I head straight for the words richest in meaning; they can give me a fairly precise notion of the book.
 
@@ -9,6 +116,7 @@ blood, cartridge belt, commander, do, have, immediately, it, life, seen, sentry,
 
 "Words that appear eighteen times:
 boys, cap, come, dead, eat, enough, evening, French, go, handsome, new, passes, period, potatoes, those, until...
+
 "Don't you already have a clear idea what it's about?"
 
 Lotaria says. "There's no question: it's a war novel, all action, brisk writing, with a certain underlying violence.
@@ -40,5 +148,13 @@ ashamed, shame, shamed, shameful, shameless, shames, shaming, vegetables, verify
 
 "You see? A guilt complex, pure and simple. A valuable indication: the critical inquiry can start with that, establish some working hypotheses.... What did I tell you?
 
-Isn't this a quick, effective system?"
+Isn't this a quick, effective system?"</pre>
+      </section>
 
+      <footer>
+        Tip: open this file directly in your browser, or serve the <code>src/</code>
+        folder with any static server.
+      </footer>
+    </main>
+  </body>
+</html>

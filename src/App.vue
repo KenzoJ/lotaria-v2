@@ -4,6 +4,8 @@ import { countWords, frequenciesDescending, sortWords, type SortedWords } from '
 import { extractTextFromEpub } from './epubText'
 import ExcerptTyper from './components/ExcerptTyper.vue'
 import excerptText from './lotaria-excerpt.txt?raw'
+import iowntEpubUrl from './IOWNT.epub?url'
+import huxleyEpubUrl from './aldous-huxley.epub?url'
 
 const textInput = ref('')
 const buckets = ref<SortedWords>({})
@@ -14,6 +16,14 @@ const excerptPanelRef = ref<HTMLElement | null>(null)
 const excerptActive = ref(false)
 
 const freqOrderDesc = computed(() => frequenciesDescending(buckets.value))
+
+type BucketUiVersion = 'v1' | 'v2'
+
+const bucketUiVersion = ref<BucketUiVersion>('v1')
+
+function onSelectBucketUiVersion(version: BucketUiVersion) {
+  bucketUiVersion.value = version
+}
 
 function isExcerptSectionReached() {
   const el = excerptPanelRef.value
@@ -82,11 +92,7 @@ function onPickEpub() {
   epubInputRef.value?.click()
 }
 
-async function onEpubSelected(ev: Event) {
-  const input = ev.target as HTMLInputElement
-  const file = input.files?.[0]
-  input.value = ''
-  if (!file) return
+async function analyzeEpubFile(file: File) {
   errorMessage.value = null
   loading.value = true
   buckets.value = {}
@@ -103,6 +109,31 @@ async function onEpubSelected(ev: Event) {
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : 'Could not read EPUB.'
   } finally {
+    loading.value = false
+  }
+}
+
+async function onEpubSelected(ev: Event) {
+  const input = ev.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+  await analyzeEpubFile(file)
+}
+
+async function onPickBuiltInEpub(url: string, filename: string) {
+  errorMessage.value = null
+  loading.value = true
+  buckets.value = {}
+  await nextTick()
+  try {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Could not load built-in EPUB (HTTP ${res.status}).`)
+    const blob = await res.blob()
+    const file = new File([blob], filename, { type: 'application/epub+zip' })
+    await analyzeEpubFile(file)
+  } catch (e) {
+    errorMessage.value = e instanceof Error ? e.message : 'Could not load built-in EPUB.'
     loading.value = false
   }
 }
@@ -153,18 +184,75 @@ async function onEpubSelected(ev: Event) {
                 :disabled="loading"
                 @change="onEpubSelected"
               />
-              <button type="button" class="btn btn-secondary" :disabled="loading" @click="onPickEpub">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                :disabled="loading"
+                @click="onPickEpub"
+              >
                 Choose EPUB file…
               </button>
+            </div>
+
+            <div class="divider" aria-hidden="true" />
+
+            <div class="option">
+              <span class="option-label">3. Use a built-in EPUB</span>
+              <div class="btn-row" role="group" aria-label="Built-in EPUB choices">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  :disabled="loading"
+                  @click="onPickBuiltInEpub(iowntEpubUrl, 'IOWNT.epub')"
+                >
+                  If on a Winter's Night a Traveler
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  :disabled="loading"
+                  @click="onPickBuiltInEpub(huxleyEpubUrl, 'aldous-huxley.epub')"
+                >
+                  Aldous Huxley's Collection of Stories
+                </button>
+              </div>
             </div>
           </div>
 
           <section class="panel results" :class="{ 'results--empty': !freqOrderDesc.length }">
             <h2 class="results-heading">Word buckets</h2>
             <template v-if="freqOrderDesc.length">
+              <div class="bucket-toolbar" aria-label="Word buckets controls">
+                <div class="bucket-toolbar__group" role="group" aria-label="Version">
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-small"
+                    :class="{ 'btn--active': bucketUiVersion === 'v1' }"
+                    @click="onSelectBucketUiVersion('v1')"
+                  >
+                    ver 1
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-small"
+                    :class="{ 'btn--active': bucketUiVersion === 'v2' }"
+                    @click="onSelectBucketUiVersion('v2')"
+                  >
+                    ver 2
+                  </button>
+                </div>
+              </div>
+
               <p v-for="freq in freqOrderDesc" :key="freq" class="bucket-line">
-                <span class="freq">{{ freq }}</span>
-                <span class="words">{{ buckets[freq]?.join(', ') }}</span>
+                <template v-if="bucketUiVersion === 'v2'">
+                  <span class="freq">{{ freq }}</span>
+                  <span class="words">{{ buckets[freq]?.join(', ') }}</span>
+                </template>
+                <template v-else>
+                  <span class="freq">Words that appear {{ freq }} times:</span>
+                  <br />
+                  <span class="words">{{ buckets[freq]?.join(', ') }}</span>
+                </template>
               </p>
             </template>
             <p v-else class="results-placeholder">Load text to see counts here.</p>
@@ -173,12 +261,18 @@ async function onEpubSelected(ev: Event) {
 
         <div class="next-section">
           <p class="next-section__hint">Scroll once to reach the excerpt section.</p>
-          <button type="button" class="btn btn-secondary" @click="scrollToExcerpt">Continue to excerpt</button>
+          <button type="button" class="btn btn-secondary" @click="scrollToExcerpt">
+            Continue to excerpt
+          </button>
         </div>
       </div>
     </section>
 
-    <section ref="excerptPanelRef" class="page-section page-section--excerpt" aria-label="Excerpt section">
+    <section
+      ref="excerptPanelRef"
+      class="page-section page-section--excerpt"
+      aria-label="Excerpt section"
+    >
       <div class="section-inner">
         <ExcerptTyper
           v-if="excerptActive"
