@@ -1,6 +1,6 @@
 {
-  "name": "lotaria-v2",
-  "version": "0.0.0",
+  "name": "Lotaria's Program",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {

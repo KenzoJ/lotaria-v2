@@ -19,6 +19,7 @@ body {
   --accent-dim: #6d1e2a;
   --accent-soft: #f0e4e6;
   --danger: #a32020;
+  --success: #2d6a3e;
   --radius: 2px;
   --font: 'Courier Prime', 'Courier New', Courier, monospace;
 
@@ -344,6 +345,19 @@ body {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.analyze-text-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+}
+
+.analyze-text-notice {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--success);
 }
 
 /* ExcerptTyper (was scoped) */

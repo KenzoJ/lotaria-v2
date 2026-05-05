@@ -15,7 +15,7 @@ describe('Count', () => {
   it('totals up number of words for short text', () => {
     const result = countWords(shortExampleText);
     console.log(result)
-    expect(Object.keys(result).length).toBe(10)
+    expect(Object.keys(result).length).toBe(6)
   });
   it('sorts words', () => {
     const result = sortWords(exampleSort);

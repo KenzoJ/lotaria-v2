@@ -1,5 +1,11 @@
+import common_words from './words'
+
 type StringMap = Record<string, number>
 export type SortedWords = Record<number, string[]>
+
+const COMMON_WORD_SET = new Set(
+  Object.keys(common_words).map((w) => w.toLowerCase()),
+)
 
 export function frequenciesDescending(sorted: SortedWords): number[] {
   return Object.keys(sorted)
@@ -14,6 +20,10 @@ export function countWords(words: string): StringMap {
 
   const flush = () => {
     if (word.length === 0) return
+    if (COMMON_WORD_SET.has(word)) {
+      word = ''
+      return
+    }
     result[word] = (result[word] ?? 0) + 1
     word = ''
   }

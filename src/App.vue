@@ -14,6 +14,20 @@ const errorMessage = ref<string | null>(null)
 const epubInputRef = ref<HTMLInputElement | null>(null)
 const excerptPanelRef = ref<HTMLElement | null>(null)
 const excerptActive = ref(false)
+const textareaAnalyzedNotice = ref(false)
+const TEXTAREA_NOTICE_VISIBLE_MS = 3200
+let textareaNoticeHideTimer: number | null = null
+
+function clearTextareaNoticeHideTimer() {
+  if (textareaNoticeHideTimer !== null) {
+    clearTimeout(textareaNoticeHideTimer)
+    textareaNoticeHideTimer = null
+  }
+}
+
+onBeforeUnmount(() => {
+  clearTextareaNoticeHideTimer()
+})
 
 const freqOrderDesc = computed(() => frequenciesDescending(buckets.value))
 
@@ -61,10 +75,6 @@ onMounted(() => {
   }
 })
 
-onBeforeUnmount(() => {
-  // listeners are removed by the onMounted cleanup
-})
-
 async function runBucketsFromText(source: string) {
   errorMessage.value = null
   loading.value = true
@@ -84,8 +94,18 @@ async function runBucketsFromText(source: string) {
   }
 }
 
-function onAnalyzeTextarea() {
-  void runBucketsFromText(textInput.value)
+async function onAnalyzeTextarea() {
+  clearTextareaNoticeHideTimer()
+  textareaAnalyzedNotice.value = false
+  await runBucketsFromText(textInput.value)
+  if (!errorMessage.value) {
+    textareaAnalyzedNotice.value = true
+    clearTextareaNoticeHideTimer()
+    textareaNoticeHideTimer = window.setTimeout(() => {
+      textareaAnalyzedNotice.value = false
+      textareaNoticeHideTimer = null
+    }, TEXTAREA_NOTICE_VISIBLE_MS) as unknown as number
+  }
 }
 
 function onPickEpub() {
@@ -146,14 +166,12 @@ async function onPickBuiltInEpub(url: string, filename: string) {
         <header class="header">
           <h1 class="title">Lotaria's Novel Reader Program</h1>
           <p class="subtitle">
-          Inspired by Italo Calvino's "If on a Winter's Night a Traveler," this is Lotaria's program. However you may feel about her, this amazing program allows the reader to finish a novel in a matter of minutes, freeing them to read even more novels.
+            Inspired by Italo Calvino's "If on a Winter's Night a Traveler," this is Lotaria's
+            program. However you may feel about her, this amazing program allows the reader to
+            finish a novel in a matter of minutes, freeing them to read even more novels.
           </p>
-          <p class="subtitle">
-          It counts the number of words and displays them in two ways.
-          </p>
-          <p class="subtitle">
-          Scroll down to see the excerpt that inspired this.
-          </p>
+          <p class="subtitle">It counts the number of words and displays them in two ways.</p>
+          <p class="subtitle">Scroll down to see the excerpt that inspired this.</p>
         </header>
 
         <p v-if="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
@@ -170,14 +188,26 @@ async function onPickBuiltInEpub(url: string, filename: string) {
                 placeholder="Paste or write novel text here…"
                 :disabled="loading"
               />
-              <button
-                type="button"
-                class="btn btn-primary"
-                :disabled="loading"
-                @click="onAnalyzeTextarea"
-              >
-                Analyze this text
-              </button>
+              <div class="analyze-text-actions">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  :disabled="loading"
+                  @click="onAnalyzeTextarea"
+                >
+                  Analyze this text
+                </button>
+                <Transition name="fade">
+                  <span
+                    v-if="textareaAnalyzedNotice"
+                    class="analyze-text-notice"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    Done!
+                  </span>
+                </Transition>
+              </div>
             </div>
 
             <div class="divider" aria-hidden="true" />
