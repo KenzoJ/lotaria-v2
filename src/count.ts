@@ -1,14 +1,6 @@
 type StringMap = Record<string, number>
 export type SortedWords = Record<number, string[]>
 
-/** Largest frequency present in buckets (0 if empty). */
-export function maxFrequency(sorted: SortedWords): number {
-  const keys = Object.keys(sorted)
-  if (keys.length === 0) return 0
-  return Math.max(...keys.map(Number))
-}
-
-/** Frequencies that have at least one word, highest first — use this iteration order in the UI. */
 export function frequenciesDescending(sorted: SortedWords): number[] {
   return Object.keys(sorted)
     .map(Number)
@@ -17,28 +9,42 @@ export function frequenciesDescending(sorted: SortedWords): number[] {
 }
 
 export function countWords(words: string): StringMap {
-  //
-  const length: number = words.length - 1
   const result: StringMap = {}
   let word = ''
-  for (let i = 0; i < length; i++) {
+
+  const flush = () => {
+    if (word.length === 0) return
+    result[word] = (result[word] ?? 0) + 1
+    word = ''
+  }
+
+  const isDelimiter = (ch: string) => {
+    return (
+      ch === ' ' ||
+      ch === '\n' ||
+      ch === '\r' ||
+      ch === '\t' ||
+      ch === ',' ||
+      ch === '.' ||
+      ch === '-' ||
+      ch === `'` ||
+      ch === `"`
+    )
+  }
+
+  for (let i = 0; i < words.length; i++) {
     const ch = words[i]
     if (ch === undefined) {
       throw new Error('words undefined')
     }
-    if (ch !== ' ' && ch !== ',') {
+    if (isDelimiter(ch)) {
+      flush()
+    } else {
       word += ch.toLowerCase()
     }
-    if (ch === ' ') {
-      const n = result[word]
-      if (n !== undefined) {
-        result[word] = n + 1
-        word = ''
-      }
-      result[word] = 1
-      word = ''
-    }
+
   }
+  flush()
   return result
 }
 

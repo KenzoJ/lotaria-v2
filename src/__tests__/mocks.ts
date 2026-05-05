@@ -1,15 +1,20 @@
 export const exampleSort = {
-  the: 1,
-  of: 2,
-  a: 3,
-  problem: 2,
-  help: 1
+  no: 1,
+  vertebrates: 1,
+  from: 1,
+  the: 2,
+  or: 5,
+  less: 1,
+  intelligence: 1,
+  namely: 1,
+  power: 3,
+  experience: 1
 }
 
 
-export const shortExampleText = `No one doubts today that all Vertebrates, from the Fish to Man,
-possess more or less intelligence--namely, the power of forming memory
-associations and of learning by experience. power power`
+export const shortExampleText = `No Vertebrates, from the
+or less or or or' or, intelligence--namely, "the" power,
+experience. 'power' power`
 
 export const exampleText = `No one doubts today that all Vertebrates, from the Fish to Man,
 possess more or less intelligence--namely, the power of forming memory
