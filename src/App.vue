@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { countWords, frequenciesDescending, sortWords, type SortedWords } from './count'
 import { extractTextFromEpub } from './epubText'
+import { extractTextFromPdf } from './pdfText'
 import ExcerptTyper from './components/ExcerptTyper.vue'
 import excerptText from './lotaria-excerpt.txt?raw'
 import iowntEpubUrl from './IOWNT.epub?url'
@@ -12,6 +13,7 @@ const buckets = ref<SortedWords>({})
 const loading = ref(false)
 const errorMessage = ref<string | null>(null)
 const epubInputRef = ref<HTMLInputElement | null>(null)
+const pdfInputRef = ref<HTMLInputElement | null>(null)
 const excerptPanelRef = ref<HTMLElement | null>(null)
 const excerptActive = ref(false)
 const textareaAnalyzedNotice = ref(false)
@@ -31,13 +33,26 @@ onBeforeUnmount(() => {
 
 const freqOrderDesc = computed(() => frequenciesDescending(buckets.value))
 
-type BucketUiVersion = 'v1' | 'v2'
+type BucketUiVersion = 'v1' | 'v2' | 'v3'
 
 const bucketUiVersion = ref<BucketUiVersion>('v1')
 
 function onSelectBucketUiVersion(version: BucketUiVersion) {
   bucketUiVersion.value = version
 }
+
+function buildBucketsFromSource(source: string) {
+  return sortWords(
+    countWords(source, {
+      excludeCommonWords: bucketUiVersion.value !== 'v3',
+    }),
+  )
+}
+
+watch(bucketUiVersion, () => {
+  if (!textInput.value.trim()) return
+  buckets.value = buildBucketsFromSource(textInput.value)
+})
 
 function isExcerptSectionReached() {
   const el = excerptPanelRef.value
@@ -83,7 +98,7 @@ async function runBucketsFromText(source: string) {
   try {
     await new Promise<void>((resolve) => {
       queueMicrotask(() => {
-        buckets.value = sortWords(countWords(source))
+        buckets.value = buildBucketsFromSource(source)
         resolve()
       })
     })
@@ -112,6 +127,10 @@ function onPickEpub() {
   epubInputRef.value?.click()
 }
 
+function onPickPdf() {
+  pdfInputRef.value?.click()
+}
+
 async function analyzeEpubFile(file: File) {
   errorMessage.value = null
   loading.value = true
@@ -122,7 +141,7 @@ async function analyzeEpubFile(file: File) {
     textInput.value = text
     await new Promise<void>((resolve) => {
       queueMicrotask(() => {
-        buckets.value = sortWords(countWords(text))
+        buckets.value = buildBucketsFromSource(text)
         resolve()
       })
     })
@@ -139,6 +158,35 @@ async function onEpubSelected(ev: Event) {
   input.value = ''
   if (!file) return
   await analyzeEpubFile(file)
+}
+
+async function analyzePdfFile(file: File) {
+  errorMessage.value = null
+  loading.value = true
+  buckets.value = {}
+  await nextTick()
+  try {
+    const text = await extractTextFromPdf(file)
+    textInput.value = text
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => {
+        buckets.value = buildBucketsFromSource(text)
+        resolve()
+      })
+    })
+  } catch (e) {
+    errorMessage.value = e instanceof Error ? e.message : 'Could not read PDF.'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function onPdfSelected(ev: Event) {
+  const input = ev.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+  await analyzePdfFile(file)
 }
 
 async function onPickBuiltInEpub(url: string, filename: string) {
@@ -213,7 +261,7 @@ async function onPickBuiltInEpub(url: string, filename: string) {
             <div class="divider" aria-hidden="true" />
 
             <div class="option">
-              <span class="option-label">2. Upload an EPUB</span>
+              <span class="option-label">2. Upload an EPUB or PDF</span>
               <input
                 ref="epubInputRef"
                 type="file"
@@ -222,14 +270,32 @@ async function onPickBuiltInEpub(url: string, filename: string) {
                 :disabled="loading"
                 @change="onEpubSelected"
               />
-              <button
-                type="button"
-                class="btn btn-secondary"
+              <input
+                ref="pdfInputRef"
+                type="file"
+                class="sr-only"
+                accept=".pdf,application/pdf"
                 :disabled="loading"
-                @click="onPickEpub"
-              >
-                Choose EPUB file…
-              </button>
+                @change="onPdfSelected"
+              />
+              <div class="btn-row" role="group" aria-label="Upload EPUB or PDF">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  :disabled="loading"
+                  @click="onPickEpub"
+                >
+                  Choose EPUB file…
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  :disabled="loading"
+                  @click="onPickPdf"
+                >
+                  Choose PDF file…
+                </button>
+              </div>
             </div>
 
             <div class="divider" aria-hidden="true" />
@@ -258,7 +324,7 @@ async function onPickBuiltInEpub(url: string, filename: string) {
           </div>
 
           <section class="panel results" :class="{ 'results--empty': !freqOrderDesc.length }">
-            <h2 class="results-heading">Word buckets</h2>
+            <h2 class="results-heading">Words</h2>
             <template v-if="freqOrderDesc.length">
               <div class="bucket-toolbar" aria-label="Word buckets controls">
                 <div class="bucket-toolbar__group" role="group" aria-label="Version">
@@ -278,11 +344,22 @@ async function onPickBuiltInEpub(url: string, filename: string) {
                   >
                     ver 2
                   </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-small"
+                    :class="{ 'btn--active': bucketUiVersion === 'v3' }"
+                    @click="onSelectBucketUiVersion('v3')"
+                  >
+                    ver 3
+                  </button>
                 </div>
+                <p v-if="bucketUiVersion === 'v3'" class="bucket-toolbar__subtitle">
+                  Adds back the hundred most common English words into these buckets.
+                </p>
               </div>
 
               <p v-for="freq in freqOrderDesc" :key="freq" class="bucket-line">
-                <template v-if="bucketUiVersion === 'v2'">
+                <template v-if="bucketUiVersion === 'v2' || bucketUiVersion === 'v3'">
                   <span class="freq">{{ freq }}</span>
                   <span class="words">{{ buckets[freq]?.join(', ') }}</span>
                 </template>

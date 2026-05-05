@@ -38,5 +38,8 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
+# Generated from pdfjs-dist (see scripts/sync-pdf-worker.mjs)
+public/pdf.worker.min.js
+
 docker-compose.yml
 nginx/

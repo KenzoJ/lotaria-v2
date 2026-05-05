@@ -98,7 +98,15 @@ const common_words: Record<string, number> = {
   give: 97,
   day: 98,
   most: 99,
-  us: 100
-};
+  us: 100,
+  is: 101,
+  was: 102,
+  are: 103,
+  had: 104,
+  has: 105,
+  were: 106,
+  been: 107,
+  am: 108,
+}
 
-export default common_words;
+export default common_words

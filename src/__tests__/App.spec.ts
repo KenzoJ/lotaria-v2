@@ -12,11 +12,15 @@ describe('App', () => {
 })
 
 describe('Count', () => {
-  it('totals up number of words for short text', () => {
-    const result = countWords(shortExampleText);
+  it('totals distinct words for short text (no common-word filter)', () => {
+    const result = countWords(shortExampleText)
     console.log(result)
+    expect(Object.keys(result).length).toBe(10)
+  })
+  it('excludes common words when excludeCommonWords is true', () => {
+    const result = countWords(shortExampleText, { excludeCommonWords: true })
     expect(Object.keys(result).length).toBe(6)
-  });
+  })
   it('sorts words', () => {
     const result = sortWords(exampleSort);
     console.log(result)

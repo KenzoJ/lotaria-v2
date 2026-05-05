@@ -14,13 +14,23 @@ export function frequenciesDescending(sorted: SortedWords): number[] {
     .sort((a, b) => b - a)
 }
 
-export function countWords(words: string): StringMap {
+export type CountWordsOptions = {
+  /** When true, tokens in the bundled common-word list are skipped. Default: false. */
+  excludeCommonWords?: boolean
+}
+
+/** Counts all tokens unless `excludeCommonWords` is true (v1/v2 Lotaria filter). */
+export function countWords(
+  words: string,
+  options?: CountWordsOptions,
+): StringMap {
+  const excludeCommon = options?.excludeCommonWords === true
   const result: StringMap = {}
   let word = ''
 
   const flush = () => {
     if (word.length === 0) return
-    if (COMMON_WORD_SET.has(word)) {
+    if (excludeCommon && COMMON_WORD_SET.has(word)) {
       word = ''
       return
     }
