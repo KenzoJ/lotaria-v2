@@ -1,6 +1,8 @@
 I asked Lotaria if she has already read some books of mine that I lent her. She said no, because here she doesn't have a computer at her disposal.
 
-She explained to me that a suitably programmed computer can read a novel in a few minutes and record the list of all the words contained in the text, in order of frequency. "That way I can have an already completed read. ing at hand," Lotaria says, "with an incalculable saving of time. What is the reading of a text, in fact, except the recording of certain thematic recurrences, certain insistences of forms and meanings? An electronic reading supplies me with a list of the frequencies, which I have only to glance at to form an idea of the problems the book suggests to my critical study. Naturally, at the highest frequencies the list records countless articles, pronouns, particles, but I don't pay them any attention. I head straight for the words richest in meaning; they can give me a fairly precise notion of the book.
+She explained to me that a suitably programmed computer can read a novel in a few minutes and record the list of all the words contained in the text, in order of frequency. "That way I can have an already completed reading at hand," Lotaria says, "with an incalculable saving of time.
+
+What is the reading of a text, in fact, except the recording of certain thematic recurrences, certain insistences of forms and meanings? An electronic reading supplies me with a list of the frequencies, which I have only to glance at to form an idea of the problems the book suggests to my critical study. Naturally, at the highest frequencies the list records countless articles, pronouns, particles, but I don't pay them any attention. I head straight for the words richest in meaning; they can give me a fairly precise notion of the book.
 
 Lotaria brought me some novels electronically transcribed, in the form of words listed in the order of their frequency. "In a novel of fifty to a hundred thousand words," she said to me, "I advise you to observe immediately the words that are repeated about twenty times.
 
@@ -22,13 +24,11 @@ There must be something hidden; I can direct my research along these lines."
 
 Lotaria shows me another series of lists. "This is an entirely different novel. It's immediately obvious. Look at the words that recur about fifty times:
 
-had, his, husband, little, Ricardo (51) answered, been, before, has, station, what (48) all, barely, bedroom, Mario, some, times (47) morning, seemed, went, whom (46) should (45) hand, listen, until, were (43) Cecilia, Delia, evening, girl, hands, six, who, years (42) almost, alone,could, man, returned, window (41) me, wanted
-
-(40) life (39)
+had, his, husband, little, Ricardo (51) answered, been, before, has, station, what (48) all, barely, bedroom, Mario, some, times (47) morning, seemed, went, whom (46) should (45) hand, listen, until, were (43) Cecilia, Delia, evening, girl, hands, six, who, years (42) almost, alone,could, man, returned, window (41) me, wanted (40) life (39)
 
 "What do you think of that? An intimatist narration, subtle feelings, understated, a humble setting, everyday life in the provinces... As a confirmation, well take a sample of words used a single time:
 
-chilled, deceived, downward, engineer, enlarge. ment, fattening, ingenious, ingenuous, injustice, jealous, kneeling, swallow, swallowed, swallow-ing...
+chilled, deceived, downward, engineer, enlarge. ment, fattening, ingenious, ingenuous, injustice, jealous, kneeling, swallow, swallowed, swallowing...
 
 "So we already have an idea of the atmosphere, the moods, the social background.. •. We can go on to a third book:
 

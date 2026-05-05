@@ -145,7 +145,15 @@ async function onPickBuiltInEpub(url: string, filename: string) {
       <div class="section-inner">
         <header class="header">
           <h1 class="title">Lotaria's Novel Reader Program</h1>
-          <p class="subtitle">Choose how to load text; word buckets appear on the right.</p>
+          <p class="subtitle">
+          Inspired by Italo Calvino's "If on a Winter's Night a Traveler," this is Lotaria's program. However you may feel about her, this amazing program allows the reader to finish a novel in a matter of minutes, freeing them to read even more novels.
+          </p>
+          <p class="subtitle">
+          It counts the number of words and displays them in two ways.
+          </p>
+          <p class="subtitle">
+          Scroll down to see the excerpt that inspired this.
+          </p>
         </header>
 
         <p v-if="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
@@ -276,7 +284,7 @@ async function onPickBuiltInEpub(url: string, filename: string) {
       <div class="section-inner">
         <ExcerptTyper
           v-if="excerptActive"
-          title="Lotaria excerpt"
+          title="If on a Winter's Night a Traveler"
           :text="excerptText"
           :active="excerptActive"
         />
